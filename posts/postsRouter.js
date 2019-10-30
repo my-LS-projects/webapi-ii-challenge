@@ -38,4 +38,31 @@ router.get('/:id', ( req, res ) => {
 
 /***** P O S T *****/
 
+router.post('/', ( req, res ) => {
+    console.log(req.body)
+    if (req.body.title && req.body.contents) {
+        insert(req.body)
+        .then(post => res.status(201).json(post))
+        .catch(error => res.status(500).json({ error: "There was an error while saving the post to the database" }))
+    } else {
+        res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+    }
+})
+
+router.post('/:id/comments', ( req, res ) => {
+    const postId = req.params.id
+
+    if(req.body.text){
+        insert(req.body)
+        .then(comment => {
+            postId ? 
+            res.status(201).json(comment)
+            : res.status(404).json({ message: "The post with the specified ID does not exist." })
+        })
+        .catch(error => res.status(500).json({ error: "There was an error while saving the comment to the database" }))
+    } else {
+        res.status(400).json({ errorMessage: "Please provide text for the comment." })
+    }
+})
+
 module.exports = router
