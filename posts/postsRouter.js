@@ -94,6 +94,9 @@ router.post('/:id/comments', ( req, res ) => {
 })
 
 
+
+/***** D E L E T E *****/
+
 router.delete('/:id', ( req, res ) => {
     const { id } = req.params
     const getPost = findById(id).then(post => {
@@ -110,6 +113,35 @@ router.delete('/:id', ( req, res ) => {
     .catch(error => {
         console.log('error', error)
     })
+
+})
+
+/***** P U T *****/
+
+router.put('/:id', ( req, res ) => {
+    const { id } = req.params
+    const { title, contents } = req.body
+
+    if (!title || !contents ) {
+        res.status().json({ errorMessage: "Please provide title and contents for the post." })
+    } else {
+        findById(id)
+        .then(post => {
+            if (post.length < 1) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            } else {
+                update(id, req.body)
+                .then(post => res.status(200).json(req.body))
+                .catch(error => {
+                    console.log('error', error)
+                    res.status(500).json({ error: "The post information could not be modified." })
+                })
+            }
+        })
+        .catch(() => {
+            res.status(404).json({ message: "The post with the specified ID does not exist." })
+        })
+    }
 
 })
 
