@@ -2,8 +2,8 @@ const express = require('express')
 const server = express() // initialize server
 const postsRouter = require('./posts/postsRouter')
 
-server.use('/api/posts', postsRouter)
 server.use(express.json())
+server.use('/api/posts', postsRouter)
 
 // server.get('/', ( req, res ) => {
 //     res.status(200).send('Server is running')
